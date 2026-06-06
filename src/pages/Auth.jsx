@@ -1,23 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Zap, Mail, Eye, EyeOff } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
+import useAuthStore from '../store/authStore';
 
 export default function Auth() {
   const navigate = useNavigate();
-  const { user, signIn, signUp, signInWithMagicLink } = useAuth();
+  const { user, loading, signIn, signUp, signInWithMagicLink } = useAuth();
+  const { loading: storeLoading } = useAuthStore();
   const [tab, setTab] = useState('login');
   const [mode, setMode] = useState('password'); // 'password' | 'magic'
   const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [form, setForm] = useState({ name: '', email: '', password: '' });
 
+  // Redirect after successful magic link verification
+  useEffect(() => {
+    if (user && !loading) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, loading, navigate]);
+
   if (user) return <Navigate to="/dashboard" replace />;
+
+  if (storeLoading || loading) {
+    return (
+      <div className="min-h-screen bg-bg-void flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-aurora-green animate-pulse" />
+          <p className="text-text-secondary text-sm">Authenticating...</p>
+        </div>
+      </div>
+    );
 
   const setField = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -25,7 +44,7 @@ export default function Auth() {
     e.preventDefault();
     setError('');
     setSuccess('');
-    setLoading(true);
+    setFormLoading(true);
     try {
       if (mode === 'magic') {
         const { error } = await signInWithMagicLink(form.email);
@@ -43,7 +62,7 @@ export default function Auth() {
     } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
 
@@ -127,7 +146,7 @@ export default function Auth() {
             {error && <p className="text-red-400 text-sm bg-red-400/10 rounded-lg px-3 py-2">{error}</p>}
             {success && <p className="text-primary-green text-sm bg-primary-green/10 rounded-lg px-3 py-2">{success}</p>}
 
-            <Button type="submit" fullWidth size="lg" loading={loading}>
+            <Button type="submit" fullWidth size="lg" loading={formLoading}>
               {mode === 'magic' ? 'Send Magic Link' : tab === 'login' ? 'Log In' : 'Create Account'}
             </Button>
           </form>
