@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    font-family: 'DM Sans', sans-serif;
+    background-color: #03040A;
+    color: #F0F4FF;
+  }
+
+  body {
+    @apply bg-bg-void text-text-primary font-body min-h-screen;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #060810;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #4A5270;
+    border-radius: 2px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: #141C30;
+    border-radius: 9999px;
+    height: 8px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00F5A0;
+    margin-top: -6px;
+    box-shadow: 0 0 10px rgba(0, 245, 160, 0.5);
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-bg-surface border border-white/5 rounded-2xl;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #00F5A0, #00C2FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-purple {
+    background: linear-gradient(135deg, #A78BFA, #00C2FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
